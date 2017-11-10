@@ -5,5 +5,7 @@ public enum Weather {
 	FLOOD,
 	HURRICANE,
 	CYCLONE,
+	EARTHQUAKE,
+	VOLCANO,
 	TYPHOON;
 }

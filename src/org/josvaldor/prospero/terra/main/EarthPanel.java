@@ -22,8 +22,8 @@ import java.util.logging.Logger;
 public class EarthPanel extends JPanel implements MouseWheelListener, KeyListener, Runnable {
     // constants
 
-    public static final int WIDTH = 360;//1600
-    public static final int HEIGHT = 180;//WIDTH / 16 * 9;
+    public static final int WIDTH = 1600;
+    public static final int HEIGHT = WIDTH / 16 * 9;
     private Earth earth;// = new Earth(new GregorianCalendar());
     private Graphics2D g2;
     int increment = 1;
@@ -127,23 +127,23 @@ public class EarthPanel extends JPanel implements MouseWheelListener, KeyListene
         this.type = Calendar.DATE;
     }
 
-//    @Override
-//    public void keyTyped(KeyEvent e) {
-//        double scale = this.earth.scale;
-//        if (e.getKeyChar() == '+' || e.getKeyChar() == '=') {
+    @Override
+    public void keyTyped(KeyEvent e) {
+        double scale = this.earth.scale;
+        if (e.getKeyChar() == '+' || e.getKeyChar() == '=') {
 //            if (scale < 1.024E-5) {
-//                this.earth.setScale(scale * 2);
+                this.earth.setScale(scale * 2);
 //            }
-//
-//        }
-//        if (e.getKeyChar() == '-' || e.getKeyChar() == '_') {
+
+        }
+        if (e.getKeyChar() == '-' || e.getKeyChar() == '_') {
 //            if (scale > 8.0E-8) {
-//                this.earth.setScale(scale / 2);
+                this.earth.setScale(scale / 2);
 //            }
-//        }
-//        draw(this.getGraphics());
-//
-//    }
+        }
+        draw(this.getGraphics());
+
+    }
 
     @Override
     public void run() {
@@ -165,9 +165,5 @@ public class EarthPanel extends JPanel implements MouseWheelListener, KeyListene
         }
     }
 
-	@Override
-	public void keyTyped(KeyEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+
 }

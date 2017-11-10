@@ -13,7 +13,7 @@ import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFileWriter;
 
 
-public class Alpha {
+public class Jetstream {
 	public static int longitudeCount = 0;
     public static int latitudeCount = 0;
     public static int levelCount = 0;
@@ -21,7 +21,7 @@ public class Alpha {
     public static int uCount = 0;
     public static int vCount = 0;
     public static String startDate = null;
-    public static String fileName = "./data/default.nc";
+    public static String fileName = "./data/jetstream/default.nc";
     public static NetcdfFileWriter netCDFFile;
 
     public static void main(String[] args) {
@@ -29,7 +29,7 @@ public class Alpha {
     }
 
     public static void processFile() {
-        String filename = "./data/netcdf.nc";
+        String filename = "./data/jetstream/netcdf.nc";
         NetcdfFile dataFile = null;
         try {
             dataFile = NetcdfFile.open(filename, null);
@@ -120,13 +120,14 @@ public class Alpha {
 //                                System.out.println("u"+u);
 //                                System.out.println("v"+v);
                                 speed = (float) (Math.pow(u,2) + Math.pow(v, 2));
-                                speedData.set(l, k, j, i, 0);
+//                                speedData.set(l, k, j, i, 0);
 //                                System.out.println(speed);
-                                if (speed > 150) {
+                                if (speed > 177) 
+                                {
 //                                    System.out.println(speed);
 //                                    System.out.println((short)speed);
                                     speedData.set(l, k, j, i, speed);
-                                      if (latitude < -70 & latitude > 70) {
+                                      if (latitude > -30 & latitude < 30) {
                                         speedData.set(l, k, j, i, (short) 0);
                                     }
 //                                    

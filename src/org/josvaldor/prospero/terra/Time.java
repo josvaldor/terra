@@ -13,6 +13,10 @@ public class Time {
 	public Time(String time) {
 		this.time = this.getCalendar(null, time);
 	}
+	
+	public Time(Calendar calendar){
+		this.time = calendar;
+	}
 
 	public GregorianCalendar getCalendar(String format, String time) {
 		GregorianCalendar calendar = new GregorianCalendar();
