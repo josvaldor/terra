@@ -1,4 +1,4 @@
- package org.josvaldor.prospero.terra.main;
+package org.josvaldor.prospero.energy.main;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -6,25 +6,25 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import javax.swing.JPanel;
-
-import org.josvaldor.prospero.terra.Terra;
-
+import org.josvaldor.prospero.energy.system.Solar;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import static java.lang.Thread.sleep;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class EarthPanel extends JPanel implements MouseWheelListener, KeyListener, Runnable {
+public class SolarPanel extends JPanel implements MouseWheelListener, KeyListener, Runnable,MouseListener {
     // constants
 
     public static final int WIDTH = 1000;
     public static final int HEIGHT = WIDTH / 16 * 9;
-    private Terra earth;// = new Earth(new GregorianCalendar());
+    private Solar solar;// = new Solar(new GregorianCalendar());
     private Graphics2D g2;
     int increment = 1;
     int type = Calendar.DATE;
@@ -32,23 +32,24 @@ public class EarthPanel extends JPanel implements MouseWheelListener, KeyListene
     boolean realTime = true;
     Thread thread = new Thread(this);
 
-    public EarthPanel(){
+    public SolarPanel(){
         super();
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setFocusable(true);
         requestFocus();
         addMouseWheelListener(this);
         addKeyListener(this);
+        addMouseListener(this);
 
     }
     
-    public void setEarth(Terra earth){
-        this.earth = earth;
+    public void setSolar(Solar solar){
+        this.solar = solar;
 //        thread.start();
     }
  
     public void setTime(Calendar c) {
-        this.earth.setTime(c);
+        this.solar.setTime(c);
     }
 
     @Override
@@ -63,22 +64,22 @@ public class EarthPanel extends JPanel implements MouseWheelListener, KeyListene
         g.fillRect(0, 0, WIDTH, HEIGHT);
         Graphics2D g2d = (Graphics2D) g;
         g2d.translate(WIDTH / 2.0, HEIGHT / 2.0);
-        earth.draw(g2d);
+        solar.draw(g2d);
         g.dispose();
     }
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        Calendar c = this.earth.getTime();
+        Calendar c = this.solar.getTime();
         int notches = e.getWheelRotation();
         if (notches < 0) {
             c.add(this.type, increment);
-            this.earth.setTime(c);
+            this.solar.setTime(c);
             this.realTime = false;
 
         } else {
             c.add(this.type, -increment);
-            this.earth.setTime(c);
+            this.solar.setTime(c);
             this.realTime = false;
         }
         draw(this.getGraphics());
@@ -106,16 +107,16 @@ public class EarthPanel extends JPanel implements MouseWheelListener, KeyListene
             this.realTime = true;
         }
         
-        Calendar c = this.earth.getTime();
+        Calendar c = this.solar.getTime();
         if (e.getKeyCode()==KeyEvent.VK_UP) {
             c.add(this.type, increment);
-            this.earth.setTime(c);
+            this.solar.setTime(c);
             this.realTime = false;
 
         } 
         if(e.getKeyCode()==KeyEvent.VK_DOWN){
             c.add(this.type, -increment);
-            this.earth.setTime(c);
+            this.solar.setTime(c);
             this.realTime = false;
         }
         draw(this.getGraphics());
@@ -129,17 +130,17 @@ public class EarthPanel extends JPanel implements MouseWheelListener, KeyListene
 
     @Override
     public void keyTyped(KeyEvent e) {
-        double scale = this.earth.scale;
+        double scale = this.solar.scale;
         if (e.getKeyChar() == '+' || e.getKeyChar() == '=') {
-//            if (scale < 1.024E-5) {
-                this.earth.setScale(scale * 2);
-//            }
+            if (scale < 1.024E-4) {
+                this.solar.setScale(scale * 2);
+            }
 
         }
         if (e.getKeyChar() == '-' || e.getKeyChar() == '_') {
-//            if (scale > 8.0E-8) {
-                this.earth.setScale(scale / 2);
-//            }
+            if (scale > 8.0E-8) {
+                this.solar.setScale(scale / 2);
+            }
         }
         draw(this.getGraphics());
 
@@ -154,16 +155,50 @@ public class EarthPanel extends JPanel implements MouseWheelListener, KeyListene
                     sleep(1000);
                     draw(this.getGraphics());
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(EarthPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SolarPanel.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             try {
                 sleep(1000);
             } catch (InterruptedException ex) {
-                Logger.getLogger(EarthPanel.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SolarPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
 
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		int x = e.getX();
+		int y = e.getY();
+		//g2.translate(x, y);
+	}
 
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		int x = e.getX();
+		int y = e.getY();
+		//g2.translate(x, y);
+		
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 }

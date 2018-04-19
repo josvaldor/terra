@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.josvaldor.prospero</groupId>
-	<artifactId>terra</artifactId>
+	<artifactId>prospero</artifactId>
 	<version>0.1.201710</version>
 	<packaging>jar</packaging>
 
@@ -101,6 +101,12 @@
 			<artifactId>gt-swing</artifactId>
 			<version>16.1</version>
 		</dependency>
+		
+	<dependency>
+		<groupId>org.mongodb</groupId>
+		<artifactId>mongo-java-driver</artifactId>
+		<version>2.10.1</version>
+	</dependency>
 	</dependencies>
 	<repositories>
 		<repository>
