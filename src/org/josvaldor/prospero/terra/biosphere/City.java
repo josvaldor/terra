@@ -1,20 +1,28 @@
 package org.josvaldor.prospero.terra.biosphere;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.filter.text.ecql.ECQL;
+import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.Filter;
+
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.io.WKTReader;
 
 public class City {
 
 	public static void main(String[] args) {
 		City a = new City();
 		a.point(-75.17194183200792, 40.001919022526465);
-		a.box(110, -45, 155, -10);
+		//a.box(110, -45, 155, -10);
 	}
 
 	public void point(double latitude, double longitude) {
@@ -40,8 +48,9 @@ public class City {
 		}
 	}
 
-	public void box(double latitudeA, double longitudeA, double latitudeB, double longitudeB) {
+	public List<Point> box(double latitudeA, double longitudeA, double latitudeB, double longitudeB) {
 		File file = new File("./data/land/ne_10m_populated_places/ne_10m_populated_places.shp");
+		List<Point> pList = new LinkedList<Point>();
 		try {
 			ShapefileDataStore dataStore = new ShapefileDataStore(file.toURI().toURL());
 			String[] typeNames = dataStore.getTypeNames();
@@ -53,8 +62,12 @@ public class City {
 			try {
 				while (iterator.hasNext()) {
 					SimpleFeature feature = iterator.next();
-					String name2 = (String) feature.getAttribute("NAMEASCII");
-					System.out.println("Name:" + name2);
+					GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory( null );
+					WKTReader reader = new WKTReader( geometryFactory );
+					Point p = (Point) reader.read(feature.getDefaultGeometry()+"");
+					pList.add(p);
+//					String name2 = (String) feature.getAttribute("NAMEASCII");
+//					System.out.println("Name:" + name2);
 				}
 			} finally {
 				iterator.close();
@@ -62,5 +75,6 @@ public class City {
 
 		} catch (Throwable e) {
 		}
+		return pList;
 	}
 }

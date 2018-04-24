@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 public class Time {
-	public String defaultTimeFormat = "yyyy-MM-dd HH:mm:ss";
+	public static String defaultTimeFormat = "yyyy-MM-dd HH:mm:ss";
 	public Calendar time;
 
 	public Time(String time) {
@@ -43,13 +43,13 @@ public class Time {
 		return date;
 	}
 
-	public String getDateString(String format, Date date) {
+	public static String getDateString(String format, Date date) {
 		String string = new SimpleDateFormat((format == null) ? defaultTimeFormat : format).format(date);
 		return string;
 	}
 
-	public String getCalendarString(String format, Calendar calendar) {
-		return this.getDateString(format, calendar.getTime());
+	public static String getCalendarString(String format, Calendar calendar) {
+		return getDateString(format, calendar.getTime());
 	}
 	
 	public String toString(){

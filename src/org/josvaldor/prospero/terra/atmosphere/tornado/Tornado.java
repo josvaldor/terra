@@ -17,7 +17,7 @@ public class Tornado {
 	public static void main(String[] args) {
 		Tornado a = new Tornado();
 		a.read();
-//		System.out.println(a.read());
+		System.out.println(a.read());
 	}
 
 	public List<Event> read() {
@@ -25,11 +25,9 @@ public class Tornado {
 		File dir = new File(target_dir);
 		File[] files = dir.listFiles();
 		List<Event> eventList = new LinkedList<Event>();
-
 		for (File f : files) {
 			if (f.isFile()) {
 				BufferedReader inputStream = null;
-
 				try {
 					inputStream = new BufferedReader(new FileReader(f));
 					String line;
@@ -41,19 +39,19 @@ public class Tornado {
 					Time time;
 					while ((line = inputStream.readLine()) != null) {
 						values = line.split(",");
-						if(!values[27].equals("-")&&!values[28].equals("-")){
+						if (!values[27].equals("-") && !values[28].equals("-")) {
 							event = new Event(Type.TORNADO);
 							coordinate = new Coordinate();
 							coordinate.latitude = Double.parseDouble(values[27]);
 							coordinate.longitude = Double.parseDouble(values[28]);
 							event.coordinate.add(coordinate);
-							if(!values[29].equals("-")&&!values[30].equals("-")){
+							if (!values[29].equals("-") && !values[30].equals("-")) {
 								coordinate = new Coordinate();
 								coordinate.latitude = Double.parseDouble(values[29]);
 								coordinate.longitude = Double.parseDouble(values[30]);
 								event.coordinate.add(coordinate);
 							}
-							time = new Time(values[2]+" "+values[3]);
+							time = new Time(values[2] + " " + values[3]);
 							event.time.add(time);
 							event.attribute.put(labelArray[8], values[8]);
 							event.attribute.put(labelArray[9], values[9]);
@@ -66,17 +64,14 @@ public class Tornado {
 						}
 					}
 				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} finally {
 					if (inputStream != null) {
 						try {
 							inputStream.close();
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
@@ -85,5 +80,4 @@ public class Tornado {
 		}
 		return eventList;
 	}
-
 }

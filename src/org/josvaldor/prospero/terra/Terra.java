@@ -6,6 +6,7 @@
 package org.josvaldor.prospero.terra;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,6 +20,7 @@ import org.josvaldor.prospero.energy.system.Solar;
 //import org.josvaldor.prospero.energy.system.planet.earth.Earth;
 import org.josvaldor.prospero.energy.system.star.sun.Sun;
 import org.josvaldor.prospero.terra.atmosphere.tornado.Tornado;
+import org.josvaldor.prospero.terra.biosphere.City;
 import org.josvaldor.prospero.terra.biosphere.Country;
 import org.josvaldor.prospero.terra.lithosphere.Tectonic;
 import org.josvaldor.prospero.terra.lithosphere.earthquake.Earthquake;
@@ -26,10 +28,12 @@ import org.josvaldor.prospero.terra.lithosphere.volcano.Volcano;
 import org.josvaldor.prospero.terra.solar.Energy;
 import org.josvaldor.prospero.terra.unit.Coordinate;
 import org.josvaldor.prospero.terra.unit.Event;
+import org.josvaldor.prospero.terra.unit.Time;
 import org.josvaldor.prospero.terra.unit.Type;
 
 import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
 
 public class Terra {
 	public Calendar time;
@@ -41,24 +45,23 @@ public class Terra {
 	public double pressureMax = 10000;
 	public List<org.josvaldor.prospero.energy.Coordinate> coordinateList;
 	public Country country;
+	public City city;
 	public Tectonic tectonic;
 	public double scale;
-//	Solar solar = new Solar();
 	public List<Event> eventList;
 	List<MultiPolygon> countryList;
+	List<Point> cityList;
 	List<MultiLineString> tectonicList;
 	Tornado tornado = new Tornado();
 	Volcano volcano = new Volcano();
 	Earthquake earthquake = new Earthquake();
-	
-	
-	private static String defaultTimeFormat = "yyyy-MM-dd HH:mm:ss";
-	
 
 	public Terra(Calendar calendar) {
 		this.time = calendar;
+		city = new City();
 		country = new Country();
 		tectonic = new Tectonic();
+		cityList = city.box(-180,90,180, -90);
 		countryList = country.box(-180,90,180, -90);
 		tectonicList = tectonic.box(-180,90,180, -90);
 		eventList = this.getEventList();
@@ -106,11 +109,11 @@ public class Terra {
 		return eList;
 	}
 	
-	public void draw(Graphics2D g){
+	public void draw(Graphics g){
 //		coordinateList = solar.getCoordinateList(new org.josvaldor.prospero.energy.system.planet.earth.Earth(this.time, new Sun(this.time)), solar.getEnergyList(this.time));
 		g.setColor(Color.yellow);
 		double radius = 5;
-		g.drawString(this.getCalendarString(null, this.time),(int)(0*scale), (int)(0*scale));
+		g.drawString(Time.getCalendarString(null, this.time),(int)(0*scale), (int)(0*scale));
 		if(this.coordinateList != null){
 		for(org.josvaldor.prospero.energy.Coordinate c:coordinateList){
 			g.drawString(c.label,(int)(c.longitude*scale), (int)(c.latitude*scale));
@@ -142,39 +145,13 @@ public class Terra {
 				g.fillOval((int)(a[i].x*scale), -(int)(a[i].y*scale), (int)2, (int)2);
 			}
 		}
-	}
-	
-	public GregorianCalendar getCalendar(String format, String time) {
-		GregorianCalendar calendar = new GregorianCalendar();
-		Date date = this.getDate(format, time);
-		if (date != null)
-			calendar.setTime(date);
-		return calendar;
-	}
-
-	public GregorianCalendar getCalendar(Date date) {
-		GregorianCalendar calendar = new GregorianCalendar();
-		calendar.setTime(date);
-		return calendar;
-	}
-
-	public Date getDate(String format, String time) {
-		SimpleDateFormat sdf = new SimpleDateFormat((format == null) ? defaultTimeFormat : format);
-		Date date = null;
-		try {
-			date = sdf.parse(time);
-		} catch (ParseException e) {
-			e.printStackTrace();
+		
+		g.setColor(Color.gray);
+		for(Point f:cityList){
+			a = f.getCoordinates();
+			for(int i=0; i<a.length;i++){
+				g.fillOval((int)(a[i].x*scale), -(int)(a[i].y*scale), (int)2, (int)2);
+			}
 		}
-		return date;
-	}
-
-	public String getDateString(String format, Date date) {
-		String string = new SimpleDateFormat((format == null) ? defaultTimeFormat : format).format(date);
-		return string;
-	}
-
-	public String getCalendarString(String format, Calendar calendar) {
-		return this.getDateString(format, calendar.getTime());
 	}
 }

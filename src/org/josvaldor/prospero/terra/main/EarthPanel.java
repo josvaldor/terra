@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Calendar;
@@ -22,15 +23,17 @@ import java.util.logging.Logger;
 public class EarthPanel extends JPanel implements MouseWheelListener, KeyListener, Runnable {
     // constants
 
-    public static final int WIDTH = 1000;
-    public static final int HEIGHT = WIDTH / 16 * 9;
+    public static final int WIDTH = 360*3;
+    public static final int HEIGHT = 180*3;//WIDTH / 16 * 9;
     private Terra earth;// = new Earth(new GregorianCalendar());
-    private Graphics2D g2;
     int increment = 1;
     int type = Calendar.DATE;
     boolean run = true;
     boolean realTime = true;
     Thread thread = new Thread(this);
+    
+    private Image offScreenImageDrawed = null;
+    private Graphics offScreenGraphicsDrawed = null;  
 
     public EarthPanel(){
         super();
@@ -54,21 +57,34 @@ public class EarthPanel extends JPanel implements MouseWheelListener, KeyListene
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        this.g2 = (Graphics2D) g;
-        draw(g2);
+//        this.g2 = (Graphics2D) g;
+        paint(g);
     }
 
-    public void draw(Graphics g) {
-        g.setColor(Color.BLACK);
-        g.fillRect(0, 0, WIDTH, HEIGHT);
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.translate(WIDTH / 2.0, HEIGHT / 2.0);
-        earth.draw(g2d);
-        g.dispose();
+    public void paint(Graphics g) {
+    	if (offScreenImageDrawed == null) {                   
+            offScreenImageDrawed = createImage(WIDTH, HEIGHT);   
+        }          
+        offScreenGraphicsDrawed = offScreenImageDrawed.getGraphics(); 
+        offScreenGraphicsDrawed.setColor(Color.BLACK);
+        offScreenGraphicsDrawed.fillRect(0, 0, WIDTH, HEIGHT);
+        offScreenGraphicsDrawed.translate((int)(WIDTH / 2.0),(int)( HEIGHT / 2.0));
+        earth.draw(offScreenGraphicsDrawed);
+        g.drawImage(offScreenImageDrawed, 0, 0, null);
     }
+    
+//    public void draw(Graphics g) {
+//        g.setColor(Color.BLACK);
+//        g.fillRect(0, 0, WIDTH, HEIGHT);
+//        Graphics2D g2d = (Graphics2D) g;
+//        g2d.translate(WIDTH / 2.0, HEIGHT / 2.0);
+//        earth.draw(g2d);
+//        g.dispose();
+//    }
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
+    		System.out.println(e);
         Calendar c = this.earth.getTime();
         int notches = e.getWheelRotation();
         if (notches < 0) {
@@ -81,7 +97,7 @@ public class EarthPanel extends JPanel implements MouseWheelListener, KeyListene
             this.earth.setTime(c);
             this.realTime = false;
         }
-        draw(this.getGraphics());
+        paint(this.getGraphics());
 
     }
 
@@ -118,7 +134,7 @@ public class EarthPanel extends JPanel implements MouseWheelListener, KeyListene
             this.earth.setTime(c);
             this.realTime = false;
         }
-        draw(this.getGraphics());
+        paint(this.getGraphics());
     }
 
     @Override
@@ -141,7 +157,7 @@ public class EarthPanel extends JPanel implements MouseWheelListener, KeyListene
                 this.earth.setScale(scale / 2);
 //            }
         }
-        draw(this.getGraphics());
+        paint(this.getGraphics());
 
     }
 
@@ -152,7 +168,7 @@ public class EarthPanel extends JPanel implements MouseWheelListener, KeyListene
                 try {
                     this.setTime(new GregorianCalendar());
                     sleep(1000);
-                    draw(this.getGraphics());
+                    paint(this.getGraphics());
                 } catch (InterruptedException ex) {
                     Logger.getLogger(EarthPanel.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -164,6 +180,4 @@ public class EarthPanel extends JPanel implements MouseWheelListener, KeyListene
             }
         }
     }
-
-
 }

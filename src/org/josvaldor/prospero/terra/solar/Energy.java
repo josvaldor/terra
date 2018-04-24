@@ -46,8 +46,4 @@ public class Energy {
 		}
 		return list;
 	} 
-	
-	//Map<String, List<Space>>
-	//Type type = new TypeToken<Map<String, String>>(){}.getType();
-//	Map<String, String> myMap = gson.fromJson("{'k1':'apple','k2':'orange'}", type);
 }
